@@ -12,7 +12,6 @@ from typing import List
 
 class Solution:
     def trap1(self, height: List[int]) -> int:
-
         # 1. blute force
         leftMaxList = [0]
         rightMaxList = [0]
