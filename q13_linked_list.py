@@ -59,6 +59,18 @@ class Solution:
         
         return True
 
+    def isPalindrome3(self, head: Optional[ListNode]) -> bool:
+        rev: ListNode = None
+        slow = fast = head
+        while fast and fast.next:
+            fast = fast.next.next
+            rev, rev.next, slow = slow, rev, slow.next
+        if fast:
+            slow = slow.next
+        while rev and rev.val == slow.val:
+            rev, slow = rev.next, slow.next
+        return not rev
+
 
 head = [1,2,2,1]
 def createListNode(index: int) -> ListNode:
@@ -79,3 +91,4 @@ first = createListNode(0)
 solution = Solution()
 print(solution.isPalindrome1(first))
 print(solution.isPalindrome2(first))
+print(solution.isPalindrome3(first))
