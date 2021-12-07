@@ -42,7 +42,6 @@ class Solution:
             dic[a].sort()
 
         def dfs(dest: str):
-            print(dest)
             while dic[dest]:
                 dfs(dic[dest].pop(0))
             path.append(dest)
@@ -50,6 +49,25 @@ class Solution:
         dfs("JFK")
 
         return path[::-1]
+
+    def findItinerary2(self, tickets: List[List[str]]) -> List[str]:
+        graph = defaultdict(list)
+        
+        # 그래프를 뒤집어서 구성
+        for a,b in sorted(tickets, reverse=True):
+            graph[a].append(b)
+        
+        route = []
+        def dfs(a):
+            # 마지막 값을 읽어 어휘순 방문
+            while graph[a]:
+                dfs(graph[a].pop())
+            route.append(a)
+        
+        dfs("JFK")
+
+        # 다시 뒤집어 어휘 순 결과로
+        return route[::-1]
 
 s = Solution()
 tickets1 = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
@@ -59,3 +77,7 @@ tickets3 = [["JFK","KUL"],["JFK","NRT"],["NRT","JFK"]]
 print(s.findItinerary1(tickets1))
 print(s.findItinerary1(tickets2))
 print(s.findItinerary1(tickets3))
+
+print(s.findItinerary2(tickets1))
+print(s.findItinerary2(tickets2))
+print(s.findItinerary2(tickets3))
