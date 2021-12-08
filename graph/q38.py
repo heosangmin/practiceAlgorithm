@@ -69,15 +69,32 @@ class Solution:
         # 다시 뒤집어 어휘 순 결과로
         return route[::-1]
 
+    def findItinerary3(self, tickets: List[List[str]]) -> List[str]:
+        graph = defaultdict(list)
+        for a,b in sorted(tickets):
+            graph[a].append(b)
+
+        route, stack = [], ["JFK"]
+        while stack:
+            while graph[stack[-1]]:
+                stack.append(graph[stack[-1]].pop(0))
+            route.append(stack.pop())
+        
+        return route[::-1]
+
 s = Solution()
 tickets1 = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
 tickets2 = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
 tickets3 = [["JFK","KUL"],["JFK","NRT"],["NRT","JFK"]]
 
-print(s.findItinerary1(tickets1))
-print(s.findItinerary1(tickets2))
-print(s.findItinerary1(tickets3))
+# print(s.findItinerary1(tickets1))
+# print(s.findItinerary1(tickets2))
+# print(s.findItinerary1(tickets3))
 
-print(s.findItinerary2(tickets1))
-print(s.findItinerary2(tickets2))
-print(s.findItinerary2(tickets3))
+# print(s.findItinerary2(tickets1))
+# print(s.findItinerary2(tickets2))
+# print(s.findItinerary2(tickets3))
+
+#print(s.findItinerary3(tickets1))
+print(s.findItinerary3(tickets2))
+#print(s.findItinerary3(tickets3))
