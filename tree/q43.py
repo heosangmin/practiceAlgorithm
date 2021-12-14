@@ -55,22 +55,21 @@ class Solution:
     longest: int = 0
 
     def diameterOfBinaryTree1(self, root: Optional[TreeNode]) -> int:
-        def dfs(node: TreeNode, depth: int = 0) -> int:
+        diameter = 0
+        def dfs(node: TreeNode) -> int:
+            nonlocal diameter
             if not node:
-                return depth
+                return 0
             
-            depth_left = dfs(node.left, depth+1)
-            depth_right = dfs(node.right, depth+1)
+            height_left = dfs(node.left)
+            height_right = dfs(node.right)
 
-            #print(f"{node.val}: {depth_left}, {depth_right}")
+            diameter = max(diameter, height_left + height_right)
+            return 1 + max(height_left, height_right)
 
-            return max(depth_left, depth_right)
+        dfs(root)
 
-        l = dfs(root.left)
-        r = dfs(root.right)
-        depth = l + r
-
-        return depth
+        return diameter
 
     def diameterOfBinaryTree2(self, root: Optional[TreeNode]) -> int:
         self.longest = 0
@@ -87,6 +86,25 @@ class Solution:
         
         dfs(root)
         return self.longest
+
+    def diameterOfBinaryTree3(self, root: Optional[TreeNode]) -> int:
+        diameter = 0
+        def dfs(node: TreeNode) -> int:
+            
+            nonlocal diameter
+
+            if not node:
+                return 0
+            
+            left_height = dfs(node.left)
+            right_height = dfs(node.right)
+
+            diameter = max(diameter, left_height + right_height)
+
+            return max(left_height,right_height) + 1
+        
+        dfs(root)
+        return diameter
         
 
 root1 = [1,2,3,4,5]
@@ -102,3 +120,7 @@ print(s.diameterOfBinaryTree1(convertTreeNodes(root3)))
 # print(s.diameterOfBinaryTree2(convertTreeNodes(root1)))
 # print(s.diameterOfBinaryTree2(convertTreeNodes(root2)))
 # print(s.diameterOfBinaryTree2(convertTreeNodes(root3)))
+
+# print(s.diameterOfBinaryTree3(convertTreeNodes(root1)))
+# print(s.diameterOfBinaryTree3(convertTreeNodes(root2)))
+# print(s.diameterOfBinaryTree3(convertTreeNodes(root3)))
