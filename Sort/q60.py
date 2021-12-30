@@ -37,14 +37,28 @@ class Solution:
         적힌 내용이라고는 자기가 쓴 코드를 풀어서 설명하는 것밖에 되지 않는다.
         코드 복기하는 것도 아니고.
         '''
-        cur = parent = ListNode(None)
-        while head:
+        # cur는 정렬된 값들의 포인터임.
+        # parent는 무조건 가장 앞 노드를 가리킴.
+        cur = parent = ListNode(-5000)
+
+        while head: # head는 크기 비교 대상임.
+
+            # cur의 다음 노드의 값이 head의 값보다 작다면 아직 삽입 위치가 아니므로 cur를 전진시킴.
             while cur.next and cur.next.val < head.val:
                 cur = cur.next
             
+            # while 루프가 끝났다는 것은 삽입 위치가 되었다는 것이므로
+            # 삽입 대상인 head를 cur와 cur.next 사이에 삽입함(cur.next = head, head.next = cur.next)
+            # 마지막으로 새 비교대상인 head를 전진시킴(head = head.next).
             cur.next, head.next, head = head, cur.next, head.next
 
-            cur = parent
+            # cur를 무조건 맨 앞(parent)로 초기화 하기 보다는
+            # 삽입이 끝난 cur의 값이 새 비교대상인 head의 값보다 큰 경우에만
+            # head를 삽입할 위치를 다시 찾아야하므로 cur를 parent로 원위치시킴.
+            # 반대로 cur의 값이 head보다 작다면 굳이 parent로 돌아갈 필요 없이
+            # 현재 cur부터 탐색해도 되므로 그대로 둔다.
+            if head and cur.val > head.val:
+                cur = parent
 
         return parent.next
 
@@ -95,8 +109,8 @@ ln2 = createListNode(head2)
 
 s = Solution()
 
-# print(convertToList(s.insertionSortList1(ln1)))
-# print(convertToList(s.insertionSortList1(ln2)))
+print(convertToList(s.insertionSortList1(ln1)))
+print(convertToList(s.insertionSortList1(ln2)))
 
-print(convertToList(s.insertionSortList2(ln1)))
-print(convertToList(s.insertionSortList2(ln2)))
+# print(convertToList(s.insertionSortList2(ln1)))
+# print(convertToList(s.insertionSortList2(ln2)))
