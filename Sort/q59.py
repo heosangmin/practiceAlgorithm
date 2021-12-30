@@ -37,6 +37,14 @@ class Solution:
                 merged[-1][1] = max(merged[-1][1],item[1])
             else:
                 merged.append(item)
+
+                # 참고로, 책 풀이에는 merged += i, 라는 연산이 있다.
+                # 콤마(,) 연산자인데 다음 예를 보자.
+                # a,b = [1],[2,3]
+                # a += b -> [1,2,3] 으로 concat 연산이다.
+                # a += b, -> [1,[2,3]] 으로 b를 하나의 아이템으로서 추가해 중첩 리스트로 만들어준다.
+                # 이것은 다시 말해 a += [b]와 같다.
+                # 그냥 리스트 append해도 되는데 책에선 왜 굳이 이렇게 했는지 모르겠다. 이런 연산자도 있다는 거겠지.
         return merged
 
 s = Solution()
