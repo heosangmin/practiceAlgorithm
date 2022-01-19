@@ -76,10 +76,10 @@ class Solution:
     def fib_simple(self, n: int) -> int:
         '''
         위에서는 딕셔너리를 이용해서 하위 문제의 답을 저장해 뒀지만
-        변수 두 개만을 사용해서 풀 수도 있다.
+        변수 두 개만을 사용해서 풀 수도 있다. 즉, 공간 복잡도가 O(n)에서 O(1)로 줄어든다.
         '''
         x, y = 0, 1
-        for i in range(0, n):
+        for _ in range(0, n):
             x, y = y, x + y
         return x
 
