@@ -25,4 +25,4 @@
 |그리디 알고리즘|[21_greedy_algorithm](./21_greedy_algorithm)|
 |분할 정복|[22_devide_and_conquer](./22_devide_and_conquer)|
 |다이나믹 프로그래밍|[23_dynamic_programming](./23_dynamic_programming)|
-|2020 카카오 공채 문제 풀이|[24_kakao](./24_kakao)|
+|카카오 공채 문제 풀이|[24_kakao](./24_kakao)|
