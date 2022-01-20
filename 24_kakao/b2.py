@@ -28,6 +28,7 @@ https://programmers.co.kr/learn/courses/30/lessons/17682
 3번의 기회에서 얻은 점수 합계에 해당하는 정수값을 출력한다.
 예) 37
 '''
+import re
 def solution_my(dartResult: str) -> int:
     temp_score_str = ""
     score_lst = []
@@ -79,25 +80,52 @@ def solution_book(dartResult: str) -> int:
     
     return sum(nums)
 
+def solution_my2(dartResult: str) -> int:
+    scores = []
+    # print(re.findall("\d+[SDT][*#]?", dartResult))
+    for s in re.findall("\d+[SDT][*#]?", dartResult):
+        score = int(re.match("\d+", s).group(0))
+        scores.append(score)
+        
+        if "D" in s:
+            scores[-1] **= 2
+        elif "T" in s:
+            scores[-1] **= 3
+
+        if "*" in s:
+            scores[-1] *= 2
+            if len(scores) > 1:
+                scores[-2] *= 2
+        elif "#" in s:
+            scores[-1] *= -1
+
+    return sum(scores)
 
 inp = "1S2D*3T" # 37
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1D2S#10S" # 9
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1D2S0T" # 3
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1S*2T*3S" # 23
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1D#2S*3S" # 5
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1T2D3D#" # -4
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
 inp = "1D2S3T*" # 59
 # print(inp, solution_my(inp))
-print(inp, solution_book(inp))
+# print(inp, solution_book(inp))
+print(inp, solution_my2(inp))
