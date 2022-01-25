@@ -14,23 +14,78 @@ lines 배열은 응답완료시간 S를 기준으로 오름차순 정렬되어 �
 출력 형식
 solution 함수에서는 로그 데이터 lines 배열에 대해 초당 최대 처리량을 리턴한다.
 '''
+import datetime
 from typing import List
-def solution(lines:List) -> int:
+def solution(lines:List[str]) -> int:
+    '''
+    이게 되네???
+    책의 풀이처럼 datetime 모듈을 활용했다면 좋았겠다.
+    '''
     answer = 0
+    logs = []
+    for line in lines:
+        complete_time = line.split(" ")[1].split(":")
+        duration = line.split(" ")[2]
+        time_to = int(complete_time[0]) * 60 * 60 * 1000 + \
+                int(complete_time[1]) * 60 * 1000 + \
+                int(float(complete_time[2]) * 1000)
+        time_from = time_to - int(float(duration.replace("s","")) * 1000 - 1)
+        logs.append([time_from, time_to])
+
+    # 1. 로그의 시작 시각과 1초 뒤의 시각(+999) 사이에 나머지 시각들이 포함
+    # 2. 로그의 완료 시각과 1초 뒤의 시각(+999) 사이에 나머지 시각들이 포함
+    # 3. 로그의 시작 시각이 나머지 로그의 실행 시간에 포함
+    for i in range(len(logs)):
+        for j in range(2):
+            local_max = 1
+            for k in range(len(logs)):
+                if i != k:
+                    if logs[i][j] <= logs[k][0] <= logs[i][j] + 999 or \
+                        logs[i][j] <= logs[k][1] <= logs[i][j] + 999 or \
+                        logs[k][0] <= logs[i][j] <= logs[k][1]:
+                        local_max += 1
+                answer = max(answer, local_max)
+
     return answer
 
+def solution_book(lines:List[str]) -> int:
+    combined_logs = []
+    for log in lines:
+        logs = log.split(" ")
+        timestamp = datetime.datetime.strptime(logs[0] + " " + logs[1], "%Y-%m-%d %H:%M:%S.%f").timestamp()
+        combined_logs.append((timestamp, -1))
+        combined_logs.append((timestamp - float(logs[2][:-1]) + 0.001, 1))
+
+    accumulated = 0
+    max_requests = 1
+    combined_logs.sort(key=lambda x: x[0])
+    for i, elem1 in enumerate(combined_logs):
+        current = accumulated
+
+        # 1초 미만 윈도우 범위 요청 수 계산
+        for elem2 in combined_logs[i:]:
+            if elem2[0] - elem1[0] > 0.999:
+                break
+            if elem2[1] > 0:
+                current += elem2[1]
+        max_requests = max(max_requests, current)
+        accumulated += elem1[1]
+    
+    return max_requests
 
 inp = [
 "2016-09-15 01:00:04.001 2.0s",
 "2016-09-15 01:00:07.000 2s"
 ] # 1
-print(solution(inp))
+#print(solution(inp))
+print(solution_book(inp))
 
 inp = [
 "2016-09-15 01:00:04.002 2.0s",
 "2016-09-15 01:00:07.000 2s"
 ] # 2
-print(solution(inp))
+#print(solution(inp))
+print(solution_book(inp))
 
 inp = [
 "2016-09-15 20:59:57.421 0.351s",
@@ -44,5 +99,6 @@ inp = [
 "2016-09-15 21:00:00.966 0.381s",
 "2016-09-15 21:00:02.066 2.62s"
 ] # 7
-print(solution(inp))
+#print(solution(inp))
+print(solution_book(inp))
 
