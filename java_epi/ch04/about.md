@@ -84,3 +84,63 @@
 > 힌트: 최하위 숫자를 구하는 것은 쉽다. 최상위 숫자를 구하는 수식을 작성할 수 있겠는가?
 
 [Panlindrome.java](Panlindrome.java)
+
+## 4.10 임의의 숫자를 균등한 확률로 생성하기
+0 혹은 1을 같은 확률로 생성해 내는 임의의 숫자 생성기가 주어졌을 때, a와 b 사이의 임의의 자연수 i를 생성하려면 어떻게 해야 할까? 여기서 [a, b] 사이의 모든 값은 같은 확률로 생성되어야 한다.
+
+> 힌트: 양면(two-sided) 동전을 이용해서 삼면(three-sided) 동전을 흉내 내려면 어떻게 해야 할까?
+
+해법: 0부터 2^i-1 사이의 숫자를 임의로 생성하기란 쉬운 일이다. i개의 비트를 0 혹은 1로 채워 넣기만 하면 되기 때문이다. 예를 들어, 임의의 숫자 생성기를 두 번 호출하면 (00)2, (01)2, (10)2, (11)2 중의 하나를 만들 수 있다. 이 네 가지 결괏값은 정수 0,1,2,3을 같은 확률로 생성한 결과와 같다.
+
+```java
+public static int uniformRandom(int lowerBound, int upperBound) {
+    int numberOfOutcomes = upperBound - lowerBound + 1, result;
+    do {
+        result = 0;
+        for (int i = 0; (1 << i) < numberOfOutcomes; ++i ) {
+            // zeroOneRandom()은 임의의 숫자를 생성하는 함수다.
+            result = (result << 1) | zeroOneRandom();
+        }
+    } while (result >= numberOfOutcomes);
+    return result + lowerBound;
+}
+```
+## 4.11 사각형이 겹치는지 확인하기
+두 개의 직사각형이 주어졌을 때, 이 둘이 겹치는지 확인하는 프로그램을 작성하라. 만약 겹친다면, 겹치는 직사각형의 정보를 반환하라. 이 문제에서는 X,Y 축에 평행한 직사각형만 고려할 것이다.
+
+> 힌트: X와 Y축은 서로 독립적이다.
+
+겹치는 모든 경우를 따져 보는 것보다 겹치지 않는 직사각형의 조건을 생각해 보는 게 낫다.
+두 사각형의 X축이 겹치지 않는다면 두 사각형은 겹치지 않는다.
+마찬가지로 두 사각형의 Y축이 겹치지 않을 때도 두 사각형은 겹치지 않는다.
+이 두 명제의 대우관계를 생각해 보면 사각형의 X축이 겹치고 동시에 Y축도 겹친다면 두 사각형은 빈 공간 없이 완전히 겹친다고 말할 수 있다.
+
+```java
+public static class Rectangle {
+    public Rectangle(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public static Rectangle intersectRectangle(Rectangle R1, Rectangle R2) {
+        if (!isIntersect(R1, R2)) {
+            return new Rectangle(0, 0, -1, -1);
+        }
+        return new Rectangle(
+            Math.max(R1.x, R2.x),
+            Math.max(R1.y, R2.y),
+            Math.min(R1.x + R1.width, R2.x + R2.width) - Math.max(R1.x, R2.x),
+            Math.min(R1.y + R1.height, R2.y + R2.height) - Math.max(R1.y, R2.y);
+        );
+    }
+
+    public static boolean isIntersect(Rectangle R1, Rectangle R2) {
+        return R1.x <= R2.x + R2.width
+            && R1.x + R1.width >= R2.x
+            && R1.y <= R2.y + R2.height
+            && R1.y + R1.height >= R2.y
+    }
+}
+```
