@@ -190,3 +190,19 @@ public static List<Integer> plusOne(List<Integer> A) {
 
 m개의 부분 곱셈이 존재하고, 각각 최대 n + 1개의 자릿수와 곱셈을 수행한다. 각 자릿수를 곱하는데 O(1) 시간이 걸리므로 총 시간 복잡도는 O(nm)이 된다.
 
+## 5.4 배열에서 이동하기
+주어진 위치 정보를 차례대로 걸어 나가야 하는 보드 게임이 있다. 각 위치에는 음이 아닌 정수값이 들어 있고, 해당 위치에서 최대 그 숫자만큼 앞으로 나아갈 수 있다. 이 게임의 목표는 첫 번째 위치에서 시작해서 마지막 위치에 도달하는 것이다. 예를 들어 배열 A=<3,3,1,0,2,0,1>의 i번째 위치에서는 최대 A[i]만큼 앞으로 나아갈 수 있다. 이 게임에서 승리하는 방법은 다음과 같다. A[0]에서 1만큼 움직여서 A[1]로 간다. 그 다음 3만큼 움직여서 A[4]로 가고, 그 다음 2만큼 움직여서 마지막 위치인 A[6]에 도달한다. A[0] = 3 >= 1, A[1] = 3 >= 3, A[4] = 2 >= 2이므로 모두 유효한 움직임이다. 만약 A가 <3,2,0,0,2,0,1>이라면 A[3]에서 더 이상 나아갈 수 없다.
+
+길이가 n인 배열 A가 주어졌을 때, 배열의 시작점에서 마지막 지점까지 도달할 수 있는지 판단하는 프로그램을 작성하라. 단 A[i]는 i번째 위치에서 나아갈 수 있는 최대 거리를 뜻한다.
+
+> 힌트: 시작점부터 시작해서 각 위치를 잘 분석해보자.
+
+```java
+public static boolean canReachEnd(List<Integer> maxAdvanceSteps) {
+    int furthestReachSoFar = 0, lastIndex = maxAdvanceSteps.size() - 1;
+    for (int i = 0; i <= furthestReachSoFar && furthestReachSoFar < lastIndex; ++i) {
+        furthestReachSoFar = Math.max(furthestReachSoFar, i + maxAdvanceSteps.get(i));
+    }
+    return furthestReachSoFar >= lastIndex;
+}
+```
