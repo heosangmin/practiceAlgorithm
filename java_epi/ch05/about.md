@@ -236,3 +236,55 @@ public static int deleteDuplicates(List<Integer> A) {
     return writeIndex;
 }
 ```
+
+## 5.6 주식 한 번 사고팔기
+특정 기간, 주식 한 주를 사서 되팔았을 때 최대 이익을 얻을 수 있는 알고리즘을 설계하라. 모든 매매는 시작가를 기준으로 하며, 매도는 매입 후에 발생한다.
+
+```java
+public static double computeMaxProfit(List<Double> prices) {
+    double minPrice = Double.MAX_VALUE, maxProfit = 0.0;
+    for (Double price : prices) {
+        maxProfit = Math.max(maxProfit, price - minPrice);
+        minPrice = Math.min(minPrice, price);
+    }
+    return maxProfit;
+}
+```
+
+시간 복잡도는 O(n)이고, 공간 복잡도는 O(1)이다. 여기서 n은 배열의 길이를 말한다.
+
+## 5.7 주식 두 번 사고팔기
+이번에는 주식 한 주를 최대 두 번까지 매매할 수 있을 때, 최대 이윤을 구하는 프로그램을 작성하라. 단 두 번쨰 주식은 첫 번째 주식을 판 뒤에 구입할 수 있다.
+
+> 힌트: (i+1)번째 원소를 다루고 있을 때, i개의 원소에서 어떤 정보를 얻어야 하는지 생각해보자.
+
+무식한 방법은 모든 가능한 매수-매도-매수-매도의 조합을 구하는 방식으로 시간 복잡도는 O(n^4)이다. 두 번째 주식은 첫 번째 주식을 매도한 뒤에 구입해야 하므로 배열 A를 두 부분 배열로 나누어 생각해 볼 수 있다. 앞의 O(n) 알고리즘을 두 배열에 적용하면 시간 복잡도를 O(n^2)으로 줄일 수 있다.
+
+이 방법은 비효율적인데, 그 이유는 이전에 계산해 놓은 값을 제대로 이용하지 못하기 때문이다. 이를 개선하는 방법을 생각해보자. A[0,j](j는 1과 n-1 사이의 값)의 최대 이익값을 기록해 놓자. 이제 반대로 순회하면서 A[j, n-1](j는 1과 n-1 사이의 값)의 최대 이익값을 구하면서 동시에 앞에서 저장해 놓은 최대 이익값을 합치면, 현재 이익값을 구하면서 동시에 앞에서 저장해 놓은 최대 이익값을 합치면, 현재 이전에 얻은 최대 이익과 현재 이후에 얻은 최대 이익의 합을 구할 수 있다.
+
+```java
+public static double buyAndSellStockTwice(List<Double> prices) {
+    double maxTotalProfit = 0.0;
+    double minPriceSoFar = Double.MAX_VALUE;
+    List<Double> firstBuySellProfits = new ArrayList<>();
+    
+    // 앞으로 읽는 부분
+    // 각 날짜마다, 해당 날짜에 주식을 팔았을 때의 최대 이익 값을 구해 놓는다.
+    for (int i = 0; i < prices.size(); ++i) {
+        minPriceSoFar = Math.min(minPriceSoFar, prices.get(i));
+        maxTotalprofit = Math.max(maxTotalProfit, prices.get(i) - minPriceSoFar);
+        firstBuySellProfits.add(maxTotalProfit);
+    }
+
+    // 뒤로 읽는 부분
+    // 각 날짜마다, 두 번째 주식을 해당 날짜에 샀을 때에 최대 이익 값을 구해 놓는다.
+    double maxPriceSoFar = Double.MIN_VALUE;
+    for (int i = prices.size() - 1; i > 0; --i) {
+        maxPriceSoFar = Math.max(maxPriceSoFar, prices.get(i));
+        maxTotalProfit = Math.max(maxTotalProfit, maxPriceSoFar - prices.get(i) + firstBuySellProfits.get(i - 1));
+    }
+    return maxTotalProfit;
+}
+```
+
+이 알고리즘의 시간 복잡도는 O(n)이고, 부분 배열의 최대 이윤을 저장하기 위한 배열이 추가적으로 필요하므로 공간 복잡도 또한 O(n)이 된다.
