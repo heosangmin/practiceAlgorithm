@@ -762,3 +762,66 @@ public static int nonuniformRandomNumberGeneration(List<Integer> values, List<Do
 
 배열을 완성한 후에, 임의의 숫자 생성기를 한 번만 호출할 뒤 이진 탐색을 사용해서 균등하지 않은 확률로 임의의 숫자를 생성할 수 있다. 이 방법의 시간 복잡도는 O(log n)이다.
 
+## 5.17 스도쿠 체크
+스도쿠는 다양한 조합의 숫자를 배치하는 논리 기반 퍼즐 게임이다. 9*9 격자판에 숫자를 채우는데, 각 행과 열, 그리고 9개의 3*3 하위 격자판에 [1,9] 사이의 숫자가 단 한 개씩 배열해야 한다.
+
+9*9 크기의 미완성된 격자판이 2차원 배열로 주어졌을 때 이 게임의 해법이 존재하는지 판별하고자 한다. 즉, 모든 행과 열, 3*3 하위 격자판에 중복되는 숫자가 없어야 한다. 2차원 배열에서 0으로 초기화되어 있는 엔트리는 빈칸을 나타내고, 그 외에는 [1,9] 숫자로 채워져 있다.
+
+> 힌트: 직접 제한 사항을 테스트해 보라. 배열을 통해 집합을 표현할 수 있다.
+
+특별한 알고리즘을 사용해야 하는 문제가 아니다. 단지 코드를 깔끔하게 작성하기만 하면 된다.
+
+9개 행의 제한사항, 9개 행의 제한사항, 9개 하위 격자판의 제한사항을 확인할 필요가 있다. 비트 배열(bit array)을 사용해서 제한사항, 즉 [1,9] 사이의 숫자가 한 번 이상 등장했는지를 테스트하면 편리하다.
+
+```java
+// 미완성된 격자가 올바르게 배치되어 있는지 확인한다.
+public static boolean isValidSudoku(List<List<Integer>> partialAssignment) {
+    // 행 제한사항을 확인한다.
+    for (int i = 0; i < partialAssignment.size(); ++i) {
+        if (hasDuplicate(partialAssignment, i, i + 1, 0, partialAssignment.size())) {
+            return false;
+        }
+    }
+
+    // 열 제한사항을 확인한다.
+    for (int j = 0; j < partialAssignment.size(); ++j) {
+        if (hasDuplicate(partialAssignment, 0, partialAssignment.size(), j, j + 1)) {
+            return false;
+        }
+    }
+
+    // 격자판 제한사항을 확인한다.
+    int regionSize = (int)Math.sqrt(partialAssignment.size());
+    for (int I = 0; I < regionSize; ++I) {
+        for (int J = 0; J < regionSize; ++J) {
+            if (hasDuplicate(partialAssignment, regionSize * I, regionSize * (I + 1), regionSize * J, regionSize * (J + 1))) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// 부분배열 partialAssignment[startRow, endRow - 1][startCol, endCol - 1]이
+// {1,2,..., partialAssignment.size()};의 값을 중복해서 가지고 있으면 true를 반환한다.
+// 그렇지 않으면 false를 반환한다.
+private static boolean hasDuplicate(List<List<Integer>> partialAssignment, int startRow, int endRow, int startCol, int endCol) {
+    List<Boolean> isPresent = new ArrayList<>(
+        Collections.nCopies(partialAssignment.size() + 1, false);
+    );
+
+    for (int i = startRow; i < endRow; ++i) {
+        for (int j = startCol; j < endCol; ++j) {
+            if (partialAssignment.get(i).get(j) != 0 && isPresent.get(partialAssignment.get(i).get(j))) {
+                return true;
+            }
+            isPresent.set(partialAssignment.get(i).get(j), true);
+        }
+    }
+    return false;
+}
+```
+
+n*n 격자판과 sqrt(n) * sqrt(n)의 하위 격자판이 주어졌을 때 n개의 행, n개의 열, 그리고 n개의 하위 격자판을 확인하는 데 필요한 시간 복잡도는 O(n^2) + O(n^2) + O(n^2/(sqrt(n)^2) * (sqrt(n)^2)) = O(n^2)이다. 추가 공간 복잡도는 비트 배열에 필요한 O(n)이 된다.
+
