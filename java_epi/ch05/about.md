@@ -825,3 +825,78 @@ private static boolean hasDuplicate(List<List<Integer>> partialAssignment, int s
 
 n*n 격자판과 sqrt(n) * sqrt(n)의 하위 격자판이 주어졌을 때 n개의 행, n개의 열, 그리고 n개의 하위 격자판을 확인하는 데 필요한 시간 복잡도는 O(n^2) + O(n^2) + O(n^2/(sqrt(n)^2) * (sqrt(n)^2)) = O(n^2)이다. 추가 공간 복잡도는 비트 배열에 필요한 O(n)이 된다.
 
+## 5.18 2차원 배열에 나선형으로 원소 배치하기
+2차월 배열에 다양한 순서로 원소를 채워 넣을 수 있다. 가장 일반적인 방법은 열별(row-by-row) 혹은 행별(column-by-column)로 채워 넣는 것이다. 이 문제에서는 2차월 배열에 원소를 나선형으로 쓰는 방법을 생각해 볼 것이다.
+
+> 힌트: 케이스 분석(case analysis)과 분할 정복법(divide-and-conquer)을 사용하라.
+
+자연스럽게 배열의 가장 자리부터 안쪽으로 숫자를 읽어 나가면 된다. 첫 번째 행에서 n개의 원소, 마지막 열에서 n-1개의 원소, 마지막 행에서 n-1개의 원소, 그리고 첫 번째 열에서 n-2개의 원소를 읽으면 된다. 하지만 읽어야 하는 원소의 개수가 일정하지 않기 때문에 자칫 코드가 복잡해질 수 있다.
+
+읽는 원소의 개수를 일정하게 유지시킬 필요가 있다. 먼저 첫 번째 행에서 n-1개의 원소를 읽는다. 그 뒤 마지막 열에서 n-1개의 원소를 읽고, 마지막 행에서 n-1개의 원소를 역순으로 읽는다. 마지막으로 첫 번째 열에서 n-1개의 원소를 역순으로 읽는다.
+
+그 뒤에는, (n-2)*(n-2) 크기의 2차원 배열을 나선형으로 읽으면 된다. 따라서 2차원 배열의 가장자리 원소를 읽는 알고리즘을 n*n, (n-2)*(n-2), (n-4)*(n-4), ... 크기의 배열에 반복 적용하면 풀 수 있다. 배열의 길이가 홀수인 경우에는 마지막에 가운데 원소만 남게 되므로 예외처리를 해야 한다.
+
+```java
+public static List<Integer> matrixInSpiralOrder(List<List<Integer>> squareMatrix) {
+    List<Integer> spiralOrdering = new ArrayList<>();
+    for (int offset = 0; offset < Math.ceil(0.5 * squareMatrix.size()); ++offset) {
+        matrixLayerInClockwise(squareMatrix, offset, spiralOrdering);
+    }
+    return spiralOrdering;
+}
+
+private static void matrixLayerInClockwise(List<List<Integer>> squareMatrix, int offset, List<Integer> spiralOrdering) {
+    if (offset == squareMatrix.size() - offset - 1) {
+        // squareMatrix의 크기는 홀수이므로, 마지막에 중심 원소 하나가 남는다.
+        spiralOrdering.add(squareMatrix.get(offset).get(offset));
+        return;
+    }
+
+    for (int j = offset; j < squareMatrix.size() - offset - 1; ++j) {
+        spiralOrdering.add(squareMatrix.get(offset).get(j));
+    }
+    for (int i = offset; i < squareMatrix.size() - offset - 1; ++i) {
+        spiralOrdering.add(squareMatrix.get(i).get(squareMatrix.size() - offset - 1));
+    }
+    for (int j = squareMatrix.size() - offset - 1; j > offset; --j) {
+        spiralOrdering.add(squareMatrix.get(squareMatrix.size() - offset - 1).get(j));
+    }
+    for (int i = squareMatrix.size() - offset - 1; i > offset; --j) {
+        spiralOrdering.add(squareMatrix.get(i).get(offset));
+    }
+}
+```
+
+시간 복잡도는 O(n^2)이고 공간 복잡도는 O(1)이다.
+
+앞의 해법은 거의 비슷한 반복문을 4번이나 사용한다. 반복문을 하나만 사용해서 해결해 보자. 즉, 동일한 반복문 내에서 다음에 처리해야 할 원소와 읽을 방향(왼쪽, 오른쪽, 위, 아래)을 결정해야 한다. 행렬이 X축과 Y축으로 이루어진 2차원 격자에 놓여 있다고 생각해 보자. (i,j)는 열 i와 행 j에 있는 엔트리를 표현한다. (x,y)가 다음에 처리해야 할 원소라고 가정하자. x가 오른쪽 (n-1, 0)에 도달할 때까지 움직인다. 그 다음에는 아래쪽 (n-1, n-1)로 내려가고, 왼쪽 (0, n-1)로 움직인다. 마지막으로 (0,1)에 도달할 때까지 위로 올라간다. (0,0)은 이미 읽은 원소이므로 (0,0)이 아닌 (0,1)에서 멈춘다는 사실에 주목하라. 이미 읽은 엔트리는 표식을 위해 0으로 채워 넣었다(배열에 없는 값이라면 아무거나 사용해도 된다). (0,1)을 처리한 후에는 위와 비슷한 방법으로 (n-2, 1)까지 움직이고, (n-2,1)에서 멈춘다. 위와 같은 방식으로 모든 원소를 읽을 때까지 이 메서드를 반복한다.
+
+```java
+public static List<Integer> matrixInSpiralOrder(List<List<Integer>> squareMatrix) {
+    final int[][] SHIFT = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+    int dir = 0, x = 0, y = 0;
+    List<Integer> spiralOrdering = new ArrayList<>();
+
+    for (int i = 0; i < squareMatrix.size() * squareMatrix.size(); ++i) {
+        spiralOrdering.add(squareMatrix.get(x).get(y));
+        squareMatrix.get(x).set(y, 0);
+        int nextX = x + SHIFT[dir][0], nextY = y + SHIFT[dir][1];
+        if (nextX < 0
+            || nextX >= squareMatrix.size()
+            || nextY < 0
+            || nextY >= squareMatrix.size()
+            || squareMatrix.get(nextX).get(nextY) == 0 )
+        {
+            dir = (dir + 1) % 4;
+            nextX = x + SHIFT[dir][0];
+            nextY = y + SHIFT[dir][1];
+        }
+        x = nextX;
+        y = nextY;
+    }
+    return spiralOrdering;
+}
+```
+
+시간 복잡도는 O(n^2)이고 공간 복잡도는 O(1)이다.
+
