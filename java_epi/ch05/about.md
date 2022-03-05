@@ -900,3 +900,55 @@ public static List<Integer> matrixInSpiralOrder(List<List<Integer>> squareMatrix
 
 시간 복잡도는 O(n^2)이고 공간 복잡도는 O(1)이다.
 
+## 5.19 2차원 배열 회전하기
+이미지 회전은 컴퓨터 그래픽스 분야에서 사용되는 기본적인 연산자 중 하나이다.
+
+n*n 크기의 2차원 배열이 주어졌을 때 이를 시계 방향으로 90도만큼 회전시키는 프로그램을 작성하라.
+
+> 힌트: 배열의 가장자리에 집중해 보라.
+
+행렬을 회전시켰을 때 i번째 열은 기존 행렬의 i번째 행과 같다. 무식하게 생각해 보면 n*n 크기의 새로운 2차원 배열을 메모리에 할당한 뒤 회전시킨 결과를 여기에 출력하고(즉, 기존 행렬의 행을 열 위치에 적는다), 이 행렬을 다시 기존 행렬로 복사해 오면 된다. 주어진 행렬을 회전시키는 문제이므로 회전된 결과를 기존 행렬로 복사해야 한다. 시간과 공간 복잡도는 모두 O(n^2)이다.
+
+하지만 추가 공간을 O(1)만큼만 사용해도 문제를 풀 수 있다. 먼저 생각할 수 있는 방법은 각 계층별로 회전을 하는 것이다. 회전 작업을 할 때 다른 계층은 서로 독립적으로 처리할 수 있기 때문이다. 또한 같은 계층에서도 4개의 원소를 한번에 회전할 수 있다. 예를 들어 1은 4의 위치에, 4는 16의 위치에, 16은 13의 위치에, 13은 1의 위치에 옮긴 뒤, 2는 8의 위치에, 8은 15의 위치에, 15는 9의 위치에, 9는 2의 위치에 옮길 수 있다. 다음 프로그램은 이러한 방식으로 가장자리 계층에서 시작해서 중심으로 다가오는 방식이다. 한 계층에서는 방금 설명한 네 개의 원소 교환을 반복적으로 수행한다.
+
+```java
+public static void rotateMatrix(List<List<Integer>> squareMatrix) {
+    final int matrixSize = squareMax.size() - 1;
+    for (int i = 0 i < (squareMatrix.size() / 2); ++i) {
+        for (int j = i; j < matrixSize - i; ++j) {
+            // 4개의 원소 교환을 수행한다.
+            int temp1 = squareMatrix.get(matrixSize - j).get(i);
+            int temp2 = squareMatrix.get(matrixSize - i).get(matrixSize - j);
+            int temp3 = squareMatrix.get(j).get(matrixSize - i);
+            int temp4 = squareMatrix.get(i).get(j);
+            squareMatrix.get(i).set(j, temp1);
+            squareMatrix.get(matrixSize - j).set(i, temp2);
+            squareMatrix.get(matrixSize - i).set(matrixSize - j, temp3);
+            squareMatrix.get(j).set(matrixSize - i, temp4);
+        }
+    }
+}
+```
+
+시간 복잡도는 O(n^2)이고 추가 공간 복잡도는 O(1)이 된다.
+
+약간의 제한 사항이 있긴 하지만 O(1)의 공간 및 시간 복잡도로 회전의 효과를 얻을 수 있는 방법이 있다. 객체 r을 반환하는 행렬 A를 가정해 보자. 회전된 행렬 A의 (i,j) 원소를 읽고자 할 때는 기존 행렬 A에서 [n-1-j,i]의 원소를 반환한다. 쓰는 연산도 이와 비슷하게 처리하면 된다. 객체 r은 단순히 행렬 A를 참조하기만 하므로 객체 r을 만드는 상수 시간이면 충분하다. 읽기 연산과 쓰기 연산을 수행하는 데 필요한 시간은 변하지는 않는다. 하지만 기존 행렬 A를 사용하고자 하는 클라이언트가 복수일 때에는 쓰기 연산에 문제가 될 수 있다. 왜냐하면 쓰기 연산은 기존 행렬 A를 수정하기 때문이다. 행렬 A에 직접 쓰는 작업이 아니더라도 저장된 객체의 메서드가 상태를 변경하면 시스템에 문제가 생길 수 있다. 이 경우에는 "쓸 때 복사하기(copy-on-write)"를 사용해서 이 문제를 해결할 수 있다.
+
+```java
+class RotateMatrix {
+    private List<List<Integer>> wrapperSquareMatrix;
+
+    public RotateMatrix(List<List<Integer>> squareMatrix) {
+        this.wrapperSquareMatrix = squareMatrix;
+    }
+
+    public int readEntry(int i, int j) {
+        return wrapperSquareMatrix.get(wrapperSquareMatrix.size() - 1 - j).get(i);
+    }
+
+    public void writeEntry(int i, int j, int v) {
+        wrapperSquareMatrix.get(wrapperSquareMatrix.size() - 1 - j).set(i, v);
+    }
+}
+```
+
