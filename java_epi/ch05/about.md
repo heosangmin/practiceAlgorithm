@@ -952,3 +952,33 @@ class RotateMatrix {
 }
 ```
 
+## 5.20 파스칼의 삼각형에서 행 계산하기
+각 행은 이전 행보다 엔트리가 하나 더 많고, 각 엔트리는 그 밑에 한 개 혹은 두 개의 엔트리를 접하고 있다(마지막 행은 제외). 첫 번째 행의 첫 번째 엔트리는 1로 시작한다. 그 다음 엔트리는 바로 위에 인접한 엔트리의 합으로 표현된다.
+
+음이 아닌 정수 n이 주어졌을 때 파스칼의 삼각형에 해당하는 첫 n개의 행을 출력하는 프로그램을 작성하라.
+
+> 힌트: 파스칼의 삼각형을 수식으로 작성해 보자.
+
+무식한 방법은 그림에 나온 것과 비슷하게 배열을 채워 나가는 것이다. 참조할 인덱스는 범위를 올바르게 설정해야 한다.
+
+인덱스 참조를 쉽게 하려면, 파스칼의 삼각형을 왼쪽으로 정렬하면 된다. 즉, 첫 번째 엔트리의 위치를 0번 위치로 설정한다. 이제 간단해졌다. j가 0 혹은 i라면, i번째 행의 j번째 엔트리는 1이 된다. 그 외의 엔트리는 (i-1)번째 행에서 (j-1)번째와 j번쨰 엔트리의 합이 된다. 첫 번째 행 R0는 <1>이다. 두 번째 행 R1은 <1,1>이 되고, 세 번째 행 R2는 <1, R1[0]+R1[1]=2, 1>이 된다. 네 번째 행 R3은 <1, R2[0]+R2[1]=3, R2[1]+R2[2]=3 ,1>이 된다.
+
+```java
+public static List<List<Integer>> generatePascalTriangle(int numRows) {
+    List<List<Integer>> pascalTriangle = new ArrayList<>();
+    for (int i = 0; i < numRows; ++i) {
+        List<Integer> currRow = new ArrayList<>();
+        for (int j = 0; j <= i; ++j) {
+            // 만약 이 위에 인접한 두 엔트리가 존재한다면, 해당 엔트리의 값을 위에 인접한 두 엔트리의 합으로 나타내라.
+            currRow.add((0 < j && j < i)
+                        ? pascalTriangle.get(i-1).get(j-1) + pascalTriangle.get(i-1).get(j)
+                        : 1);
+        }
+        pascalTriangle.add(currRow);
+    }
+    return pascalTriangle;
+}
+```
+
+각 원소를 구하는 데 O(1)이 걸리므로 전체 시간 복잡도는 O(1+2+...+n) = O(n(n+1)/2) = O(n^2)가 된다.
+
