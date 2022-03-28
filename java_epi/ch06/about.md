@@ -104,3 +104,36 @@ public static int stringToInt(String s) {
     return s.charAt(0) == '-' ? -result : result;
 }
 ```
+
+## 6.2 밑수 바꾸기
+10진수 시스템의 자릿수는 10의 승수를 결정하는 데 사용된다. 예를 들어 "314"는 3 * 100 + 1 * 10 + 4 * 1을 의미한다. 10진수 시스템을 밑수가 b인 숫자 시스템으로 일반화할 수 있다. 0 <= ai < b일 때 문자열 "ak-1ak-2...a1a0"은 b진수 시스템에서는 a0 * b^0 + a1 * b^2 + ... + ak-1 * b^(k-1)을 의미한다.
+
+문자열 하나와 두 개의 정수 b1, b2가 주어졌을 때, 정수의 밑수를 바꾸는 프로그램을 작성하라. 밑수가 b1인 입력 문자열을 밑수가 b2인 문자열로 바꾸면 된다. 2 <= b1, b2 <= 16이고, "A"는 10, "B"는 11, ..., "F"는 15를 나타낸다(예를 들어 문자열이 "615"이고, b1은 7, b2는 13일 때 결과는 "1A7"이 된다. 왜냐하면 6 * 7^2 + 1 * 7 + 5 = 1 * 13^2 + 10 * 13 + 7이기 때문이다).
+
+> 힌트: 우리가 주로 사용하는 밑수는 무엇인가.
+
+우선 무식하게 접근해보자. 입력 숫자를 1진수로 바꾼 뒤 1을 b2, b2^2, b2^3 등의 배수로 그룹을 지으면 된다. 예를 들어 (102)_3 = (11111111111)_1이 된다. 이를 밑이 4인 숫자로 바꾸면, 1의 개수가 4개인 그룹 2개가 생기고, 나머지 1이 3개 남는다. 따라서 그 결과는 (23)_4가 된다. 이 방법은 구현하기 힘들고 시간 밑 공간 복잡도도 굉장히 크다.
+
+모든 언어에는 정수형 변수가 존재한다. 즉, 모든 언어는 곱셈, 덧셈, 나눗셈, 나머지 등과 같은 산순 연산을 제공한다. 이 사실을 통해 더 쉽게 밑수를 바꾸는 알고리즘을 개발할 것이다. 즉, 곱셈과 덧셈을 통해 밑수가 b1인 문자열을 정수로 바꾸고, 나머지 연산과 나눗셈 연산을 통해 해당 정수를 밑수가 b2인 문자열로 바꿀 것이다. 예를 들어 문자열이 "615"이고 b1 = 6, b2 = 13이라고 가정하자. 이를 10진수로 표현하면 306이 된다. 306을 13진수로 표현했을 때의 최하위 숫자는 306 mod 13 = 7이고, 나머지 몫은 306/13 = 23이 된다. 그 다음에 등장할 숫자는 23 mod 13 = 10, 즉 'A'가 된다. 23/13 = 1이고 1 mod 13 = 1이므로 마지막 숫자는 1이 된다. 따라서 최종 결과는 "1A7"이 된다. 밑수를 바꾸는 알고리즘은 더 작은 부분 문제로 간단하게 표현되므로 자연스럽게 재귀를 사용하면 좋다.
+
+```java
+public static String convertBase(String numAsString, int b1, int b2) {
+    boolean isNegative = numAsString.startsWith("-");
+    int numAsInt = 0;
+    for (int i = (isNegative ? 1 : 0); i < numAsString.length(); i++) {
+        numAsInt *= b1;
+        numAsInt += Character.isDigit(numAsString.charAt(i))
+            ? numAsString.charAt(i) - '0'
+            : numAsString.charAt(i) - 'A' + 10
+    }
+    return (isNegative ? "-" : "") + (numAsInt == 0 ? "0" : constructFromBase(numAsInt, b2))
+}
+
+public static String constructFromBase(int numAsInt, int base) {
+    return numAsInt == 0
+        ? ""
+        : constructFromBase(numAsInt / base, base) + (char)(numAsInt % base >= 10 ? 'A' + numAsInt % base - 10 : '0' + numAsInt % base);
+}
+```
+
+s의 길이를 n이라고 했을 때 시간 복잡도는 O(n(1 + log_b2(b1))), 즉 O(nlog_b2(b1))이 된다. 그 이유는 다음과 같다. 먼저 s에서 x를 얻기 위해서 b개의 곱셈과 덧셈을 수행한다. 그리고 최종 결과를 얻기 위해서 log_b2^x만큼의 곱셈과 덧셈을 수행한다. x의 상한은 b1^n이고 log_b2(b1^n) = n log_b2(b1)가 된다.
