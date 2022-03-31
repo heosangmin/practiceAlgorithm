@@ -221,3 +221,38 @@ public static int replaceAndRemove(int size, char[] s) {
 ```
 
 배열을 앞으로 한 번 뒤로 한 번, 총 두 번 읽으므로 전체 시간 복잡도는 O(n)이다. 추가 공간은 필요하지 않다.
+
+## 6.5 회문 확인하기
+문자열 s가 주어졌을 때 이 문자열이 회문인지 확인하는 함수를 작성하라.
+
+> 힌트: 인덱스 변수 두 개를 사용해서 풀어보자.
+
+가장 간단한 방법은 s를 역순으로 나열한 뒤, 알파벳만을 비교하는 것이다. 이 방법은 s의 길이에 비례하도록 공간을 추가적으로 사용해야 한다.
+
+역순 문자열을 추가하지 않고, 문자열을 뒤에서 앞으로 읽어 나가면 s를 역순으로 읽는 효과를 낼 수 있다. 변수 두 개를 사용해서 하나는 뒤에서 앞으로, 다른 하나는 앞에서 뒤로 읽으면서 알파벳을 비교한다. 비교 결과가 다르다면 즉시 거짓을 반환한다. 두 변수가 서료 교차하면 s는 회문이다.
+
+```java
+public static boolean isPalindrome(String s) {
+    // i는 앞으로 읽고 j는 뒤로 읽는다.
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        // left와 right는 영문자나 숫자가 아니면 건너뛴다.
+        while (!Character.isLetterOrDigit(s.charAt(left)) && left < right) {
+            left++;
+        }
+        while(!Character.isLetterOrDigit(s.charAt(right)) && left < right) {
+            right--;
+        }
+        if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))){
+            return false;
+        }
+        if (s.charAt(left) != s.charAt(right)) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+s의 길이를 n이라고 했을 때 전체 시간 복잡도는 O(n)이 소요된다.
+
