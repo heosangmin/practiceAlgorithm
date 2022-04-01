@@ -256,3 +256,53 @@ public static boolean isPalindrome(String s) {
 
 s의 길이를 n이라고 했을 때 전체 시간 복잡도는 O(n)이 소요된다.
 
+## 6.6 문장의 모든 단어 뒤집기
+빈칸으로 구분되는 단어 집합이 있을 때 이 단어의 순서를 역순으로 배열해 보자. 예를 들어 "Alice likes Bob"은 "Bob likes Alice"가 된다. 입력 문자열의 원본은 유지하지 않아도 된다.
+
+문자열 s의 단어를 모두 뒤집는 함수를 작성하라.
+
+> 힌트: 문자열을 한 번만 읽어서 풀기는 쉽지 않다.
+
+단일 패스를 통해 각 문자의 최종 위치를 알아내기는 어렵다. 하지만 모든 단어가 단일 문자로 구성되어 있다면 단순히 s를 뒤집기만 하면 된다. 일반적으로 s를 뒤집으면 단어는 상대적으로 올바른 위치에 놓인다. 하지만 단어의 길이가 1 이상일 때는 문자가 역순으로 표현된다. 이 문제는 각 단어를 다시 뒤집어 주면 해결할 수 있다.
+
+예를 들어 "ram is costly"를 뒤집으면 "yltsoc si mar"가 되고, 각 단어의 문자를 뒤집어 주면 "costly is ram"이 된다.
+
+```java
+public static void reverseWords(char[] input) {
+    int n = input.length;
+    // 첫 번째, 전체 문자열을 뒤집는다.
+    reverse(input, 0, n - 1);
+
+    // 두 번째, 문자열의 각 단어를 뒤집는다.
+    int start = 0, end = 0;
+    while (start < n) {
+        while (start < end || start < n && input[start] == ' ') {
+            ++start; // 공백 문자는 건너뛴다.
+        }
+        while (end < start || end < n && input[end] != ' ') {
+            ++end; // 공백 문자가 아니면 건너뛴다.
+        }
+        reverse(input, start, end - 1);
+    }
+}
+
+private static void reverse(char[] array, int start, int end) {
+    while (start < end) {
+        char tmp = array[start];
+        array[start++] = array[end];
+        array[end--] = tmp;
+    }
+}
+
+private static int find(char[] array, char c, int start) {
+    for (int i = start; i < array.length; i++) {
+        if (array[i] == c) {
+            return i;
+        }
+    }
+    return -1;
+}
+```
+
+문자열 s의 길이를 n이라고 했을 때 전체 시간 복잡도는 O(n)이 된다. 만약 문자열을 직접 수정할 수 있으면 문자열 내에서 알고리즘을 수행할 수 있다. 즉, 추가로 공간 복잡도가 O(1) 더 든다. 만약 문자열을 수정할 수 없다면 길이가 n인 새로운 문자열을 만들어야 하므로 추가 공간 복잡도가 O(n)이 된다.
+
