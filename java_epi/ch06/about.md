@@ -306,3 +306,40 @@ private static int find(char[] array, char c, int start) {
 
 문자열 s의 길이를 n이라고 했을 때 전체 시간 복잡도는 O(n)이 된다. 만약 문자열을 직접 수정할 수 있으면 문자열 내에서 알고리즘을 수행할 수 있다. 즉, 추가로 공간 복잡도가 O(1) 더 든다. 만약 문자열을 수정할 수 없다면 길이가 n인 새로운 문자열을 만들어야 하므로 추가 공간 복잡도가 O(n)이 된다.
 
+## 6.7 문자열 전화번호로 단어 조합하기
+전화번호가 문자열로 주어졌을 때 모든 가능한 단어조합을 반환하는 프로그램을 작성하라. 전화 키패드는 숫자 하나에 여러 개의 문자로 대응된다. 생성된 문자열이 꼭 유효한 단어 혹은 구절이 되어야 하는 건 아니다.
+
+> 힌트: 재귀를 사용하라.
+
+단순하게 생각해 보면 7자리 전화번호는 7개의 문자 집합으로 대응된다는 걸 알 수 있다. 예를 들어 "2276696"의 각 숫자는 문자 집합 'A' - 'C', 'A' - 'C', 'P' - 'S', 'M' - 'O', 'M' - 'O', 'W' - 'Z', 'M' - 'O'으로 대응된다. 7개의 중첩된 루프를 사용해서 모든 가능한 문자열을 만들 수도 있지만 같은 코드가 반복되고 유연하지 못하다는 단점이 있다.
+
+이처럼 모든 경우의 수를 나열할 때는 재귀를 사용하는 게 일반적으로 제일 좋다. 실행 경로(execution path)는 반복문을 사용하는 것과 굉장히 비슷하지만 컴파일러가 직접 반복문을 처리한다는 점이 다르다.
+
+```java
+public static List<String> phoneMnemonic(String phoneNumber) {
+    char[] partialMnemonic = new char[phoneNumber.length()];
+    List<String> mnemonics = new ArrayList<>();
+    phoneMnemonicHelper(phoneNumber, 0, partialMnemonic, mnemonics);
+}
+
+// 숫자에서 문자 집합으로의 대응이다.
+private static final String[] MAPPING = {"0", "1", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"};
+
+private static void phoneMnemonicHelper(String phoneNumber, int digit, char[] partialMnemonic, List<String> mnemonics) {
+    if (digit == phoneNumber.length()) {
+        // 모든 숫자를 처리했다. 따라서 partialMnemonic를 추가해 주면 된다.
+        // 다음에 호출될 때 partialMnemonic를 수정할 수도 있기 때문에 이 문자열을 복사한다.
+        mnemonics.add(new String(partialMnemonic));
+    } else {
+        // 해당 숫자에 대응되는 모든 문자를 넣어 본다.
+        for (int i = 0; i < MAPPING[phoneNumber.charAt(digit) - '0'].length(); i++) {
+            char c = MAPPING[phoneNumber.charAt(digit) - '0'].charAt(i);
+            partialMnemonic[digit] = c;
+            phoneMnemonicHelper(phoneNumber, digit + 1, partialMnemonic, mnemonics);
+        }
+    }
+}
+```
+
+각 숫자가 최대 4개의 문자로 대응되므로 재귀 호출 횟수 T(n) <= 4T(n-1)을 만족하고 (n은 전화번호 길이), 따라서 T(n) = O(4^n)이다. 함수 내부에서는 재귀 호출 외에 추가로 O(1)의 시간만을 사용한다. 하지만 문자열이 완성될 때마다 매번 해당 문자열을 복사하고 결과에 더하는 연산을 수행하므로 O(n)이 추가적으로 소요된다. 따라서 전체 시간 복잡도는 O((4^n) * n)이다.
+
