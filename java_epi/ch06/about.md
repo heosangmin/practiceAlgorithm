@@ -438,4 +438,54 @@ public static int romanToInteger(String s) {
 
 문자열 s의 길이를 n이라고 할 때, 이 알고리즘의 시간 복잡도는 O(n)이다.
 
+## 6.10 유효한 IP 주소 구하기
+10진수 문자열은 0에서 9까지의 숫자로 표현된 문자열을 뜻한다. IP(Internet Protocol) 주소는 192.168.1.201과 같이 네 개의 10진수 숫자를 세 개의 마침표로 구분한다. 그런데 IP 주소를 입력하다가 실수로 마침표를 전부 빼먹었다고 가정해보자.
+
+문자열로 주어진 IP주소에 마침표를 추가할 경우 가능한 모든 IP 주소를 출력하라. 유효한 IP 주소가 한 개 이상이라면 전부 출력한다.
+
+예를 들어 문자열이 "19216811"이라면 192.168.1.1 또는 19.216.81.1을 포함해 총 아홉 개의 휴효한 IP 주소가 존재한다.
+
+> 힌트: 중첩 반복문(nested loop)를 사용해 보자.
+
+문자열 IP 주소에서 모든 위치에 마침표를 찍어 본 뒤 나누어진 숫자 네 개가 0과 255 사이에 있는지 확인해 보면 된다. 이때 세 자리 이하의 자릿수만 고려한다면 시도해야 하는 전체 개수를 줄일 수 있다. 또한 더 이상 진행해도 유효한 결과를 만들 수 없다고 판단될 때 가지치기(pruning)를 통해 곧바로 멈출 수도 있다.
+
+예를 들어 "19216811"에서 첫 숫자로 가능한 숫자는 "1", "19" 혹은 "192"뿐이다. 만약 첫 부분을 "1"로 고정시켰다고 했을 때 그 다음에 나올 수 있는 숫자는 "9","92", 그리고 "921"인데 "921"은 "255"보다 크므로 유효하지 않은 IP 주소가 된다. 따라서 "921"를 포함한 경우는 더 이상 살펴보지 않아도 된다.
+
+```java
+public static List<String> getValidIpAddress(String s) {
+    List<String> result = new ArrayList<>();
+    for (int i = 1; i < 4 && i < s.length(); ++i) {
+        final String first = s.substring(0, i);
+        if (isValidPart(first)) {
+            for (int j = 1; i + j < s.length() && j < 4; ++j) {
+                final String second = s.substring(i, i + j);
+                if (isValidPart(second)) {
+                    for (int k = 1; i + j + k < s.length() && k < 4; ++k) {
+                        final String third = s.substring(i + j, i + j + k);
+                        final String fourth = s.substring(i + j + k);
+                        if (isValidPart(third) && isValidPard(fourth)) {
+                            result.add(first + "." + second + "." + third + "." + fourth);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
+
+private static boolean isValidPart(String s) {
+    if (s.length() > 3) {
+        return false;
+    }
+    // "00", "000", "01" 등은 유효하지 않지만, "0"은 유효하다.
+    if (s.startsWith("0") && s.length() > 1) {
+        return false;
+    }
+    int val = Integer.parseInt(s);
+    return val <= 255 && val >= 0;
+}
+```
+
+모든 가능한 IP주소는 정확히 2^32개이므로, 위의 알고리즘은 상수 시간 복잡도 O(1)이 된다.
 
