@@ -489,3 +489,40 @@ private static boolean isValidPart(String s) {
 
 모든 가능한 IP주소는 정확히 2^32개이므로, 위의 알고리즘은 상수 시간 복잡도 O(1)이 된다.
 
+## 6.11 사인 곡선 형태로 문자열 작성하기
+문자열을 사인 곡선 형태로 작성해 보자. 다음 예제는 문자열 "Hello World!"가 사인 곡선(sine curve) 모양으로 표현된 것이다.
+  e                 l
+h   l   o     W   r   d
+      l         o       !
+
+사인 곡선 형태로 출력된 문자열 s를 왼쪽에서 오른쪽으로 읽는 형태를 뱀 문자열이라고 하자. 예를 들어 "Hello World!"의 뱀 문자열은 "e HloWrdlo!"이다.
+
+문자열 s가 주어졌을 때 s의 뱀 문자열을 구하는 프로그램을 작성하라.
+
+> 힌트: 예제를 사용해서 규칙을 찾아보자.
+
+무식한 방법으로 접근해 보자. 우선 3 * n 크기의 2차원 배열을 null로 초기화한다. 그 뒤에 문자열을 사인 곡선 형태로 쓴 다음에 null이 아닌 문자를 행 우선 순서(row major manner)로 읽으면 된다.
+
+그런데 잘 살펴보면 첫 번째 행은 s[1], s[5], s[9],... 두 번째 행은 s[0], s[2], s[4],... 마지막 행은 s[3], s[7], s[11],...의 순서로 쓰인다는 사실을 알 수 있다. 따라서 추가적인 메모리 사용 없이 세 번의 반복문을 통해 뱀 문자열을 구할 수 있다.
+
+```java
+public static String snakeString(String s) {
+    StringBuilder result = new StringBuilder();
+    // 첫 번째 줄(s[1], s[5], s[9])을 출력한다.
+    for (int i = 1; i < s.length(); i += 4) {
+        result.append(s.charAt(i));
+    }
+    // 두 번째 줄(s[0], s[2], s[4])을 출력한다.
+    for (int i = 0; i < s.length(); i += 2) {
+        result.append(s.charAt(i));
+    }
+    // 세 번째 줄(s[3], s[7], s[11])을 출력한다.
+    for (int i = 3; i < s.length(); i += 4) {
+        result.append(s.charAt(i));
+    }
+    return result.toString();
+}
+```
+
+a의 길이를 n이라고 했을 때, 세 번의 반복문에 필요한 시간은 O(n)이므로 전체 시간 복잡도는 O(n)이다.
+
