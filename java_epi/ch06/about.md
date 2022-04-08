@@ -526,3 +526,49 @@ public static String snakeString(String s) {
 
 a의 길이를 n이라고 했을 때, 세 번의 반복문에 필요한 시간은 O(n)이므로 전체 시간 복잡도는 O(n)이다.
 
+## 6.12 반복 길이 부호화로 문자열을 압축, 해제하기
+반복 길이 부호화(RLE, Run-Length Encoding)는 압축 및 해제를 실시간으로 수행할 수 있는 효과적인 압축 방법이다. 아이디어는 간단하다. 실제 문자열 대신 문자와 해당 숫자의 연속 등장 횟수를 함께 써 주면 된다. 예를 들어 "aaaabcccaa"를 RLE로 압축하면 "4a1b3c2a"가 되고, "3e4f2e"을 압축 해제하면 "eeeffffee"가 된다.
+
+반복 길이 부호화를 사용해서 문자열의 압축 및 해제를 구현하라. 입력 문자열은 항상 유효하며 압축할 문자열은 숫자를 제외한 알파벳으로만 구성되어 있다.
+
+> 힌트: 2진수를 문자열 형태 혹은 그 반대로 바꾸는 방법과 비슷하게 풀 수 있다.
+
+압축 해제하는 함수를 먼저 생각해 보자. 위의 규칙을 보면 압축된 문자열은 항상 숫자 뒤에 문자 한 개가 등장한다는 사실을 알 수 있다. 연속된 숫자는 양의 정수이다. 따라서 연속된 숫자를 정수로 바꾼 뒤, 그 뒤에 등장하는 문자를 해당 숫자만큼 출력하고, 이를 모든 문자에 대해 반복하면 된다.
+
+압축 함수에서는 같은 문자의 개수를 센 뒤 이 숫자를 문자열로 바꿔준다.
+
+```java
+public static String decoding(String s) {
+    int count = 0;
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (Character.isDigit(c)) {
+            count = count * 10 + c - '0'; // ??
+        } else {
+            while (count > 0) {
+                result.append(c);
+                count--;
+            }
+        }
+    }
+    return result.toString();
+}
+
+public static String encoding(String s) {
+    int count = 1;
+    StringBuilder ss = new StringBuilder();
+    for (int i = 1; i < s.length(); i++) {
+        if (i == s.length() - 1 || s.charAt(i) != s.charAt(i - 1)) {
+            ss.append(count);
+            ss.append(s.charAt(i - 1));
+            count = 1;
+        } else {
+            count++;
+        }
+    }
+    return ss.toString();
+}
+```
+
+문자열의 길이를 n이라고 했을 때 전체 시간 복잡도는 O(n)이 된다.
