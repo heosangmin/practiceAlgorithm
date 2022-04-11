@@ -74,3 +74,40 @@ Arrays.asList()는 튜플 클래스 혹은 접근자(getter)와 설정자(setter
 - Arrays.asList(new int[]{1, 2, 4})와 깉이 기본형 배열을 사용해서 Arrays.asList()를 호출하면, [1, 2, 4] 정수 배열이 들어 있는 노드가 하나뿐인 리스트가 반환될 것이다. 따라서 Arrays.asList(new Integer[]{1, 2, 4})와 같이 박스 타입을 사용해야 원하는 결과를 얻을 것이다.
 - 기존 배열을 유지한 채 복사하려면 Arrays.copyOf(A, A.length)를 사용해야 한다.
 
+## 7.1 두 개의 정렬된 리스트 합치기
+단순 연결리스트 L과 F에 숫자가 오름차순으로 저장되어 있다고 가정하자. 우리는 L과 F를 합쳐서 하나의 단순 연결리스트로 표현하고자 한다. 단, 합쳐진 리스트의 숫자 또한 오름차순을 그대로 유지하고 싶다.
+
+정렬된 단순 연결리스트 두 개가 주어졌을 때, 이 둘을 합친 리스트를 반환하는 프로그램을 작성하라. 여러분의 프로그램이 수정할 수 있는 변수는 다음 노드를 가리키는 next뿐이다.
+
+> 힌트: 두 개의 정렬된 배열은 인덱스 두 개를 써서 합칠 수 있다. 리스트의 경우, 반복자가 끝에 도달했을 때의 처리에 주의하자.
+
+단순하게 생각해보면 리스트 두 개를 합친 뒤 정렬하면 된다. 하지만 이 방법은 기존 리스트가 정렬되어 있다는 사실을 사용하지 않는다. 따라서 다시 정렬할 때 필요한 시간 복잡도는 O((n + m) log(n + m))이 된다(각 리스트의 길이를 n과 m이라 하자).
+
+시간 복잡도 측면에서 더 효율적인 방법은 두 개의 리스트를 앞에서부터 확인하면서 작은 키를 가지고 있는 노드를 선택해 나가는 방법이다.
+
+```java
+public static ListNode<Integer> mergeTwoSortedLists(ListNode<Integer> L1, ListNode<Integer> L2) {
+    // 결과를 저장할 변수를 생성한다.
+    ListNode<Integer> dummyHead = new ListNode<>(0, null);
+    ListNode<Integer> current = dummyHead;
+    ListNode<Integer> p1 = L1, p2 = L2;
+
+    while (p1 != null && p2 != null) {
+        if (p1.data <= p2.data) {
+            current.next = p1;
+            p1 = p1.next;
+        } else {
+            current.next = p2;
+            p2 = p2.next;
+        }
+        current = current.next;
+    }
+
+    // p1 혹은 p2에 남아 있는 노드를 덧붙인다.
+    current.next = p1 != null ? p1 : p2;
+    return dummyHead.next;
+}
+```
+
+시간 복잡도 측면에서 최악의 경우의 시간 복잡도는 리스트의 길이와 같고 따라서 O(n + m)이 된다(최고의 경우는 리스트 하나가 다른 하나보다 굉장히 짧으면서 모든 노드가 합병된 리스트의 앞부분에 나타나는 경우일 것이다). 이미 존재하는 노드를 그대로 사용하므로 공간 복잡도는 O(1)과 같다.
+
