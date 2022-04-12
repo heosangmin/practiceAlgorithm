@@ -111,3 +111,41 @@ public static ListNode<Integer> mergeTwoSortedLists(ListNode<Integer> L1, ListNo
 
 시간 복잡도 측면에서 최악의 경우의 시간 복잡도는 리스트의 길이와 같고 따라서 O(n + m)이 된다(최고의 경우는 리스트 하나가 다른 하나보다 굉장히 짧으면서 모든 노드가 합병된 리스트의 앞부분에 나타나는 경우일 것이다). 이미 존재하는 노드를 그대로 사용하므로 공간 복잡도는 O(1)과 같다.
 
+## 7.2 부분 리스트 하나 뒤집기
+리스트의 부분 리스트를 역순으로 재배열하는 문제를 풀어보자.
+
+단순 연결리스트 L과 두 개의 정수 s와 f가 주어졌을 때 s번째 노드부터 f번째 노드까지 뒤집는 프로그램을 작성하라. 단, 헤드 노드를 시작으로 1부터 차례대로 번호를 매긴하고 가정하자. 이때 노드를 추가해선 안 된다.
+
+> 힌트: 갱신해야 할 다음 노드를 주의 깊게 살펴보자.
+
+직접적인 해법은 부분 리스트를 뽑아낸 뒤, 뒤집고, 기존 기존 리스트에 이어서 붙여 주면 된다. 하지만 이 경우에는 부분 리스틀 두 번 읽어야 하는 단점이 있다.
+
+하지만 부분 리스트를 찾는 동시에 뒤집을 수 있다면 어떨까? 부분 리스트를 한 번만 읽어서 문제를 해결할 수 있을 것이다. 리스트를 앞에서부터 차례로 훑어 가면서 부분 리스트의 시작 지점을 찾는다. s번째 노드에 도착하면 부분 리스트의 시작 노드와 이전 노드가 무엇인지 알 수 있다. 이제 뒤집는 과정을 시작하는 동시에 계속 리스트의 앞으로 나아간다. f번쨰 노드에 도착한 후 뒤집는 과정을 멈춘다. 그 다음에 뒤집은 부분 리스트를 기존 리스트에 연결시킨다.
+
+```java
+public static ListNode<Integer> reverseSublist(ListNode<Integer> L, int start, int finish) {
+    if (start == finish) {
+        return L;
+    }
+
+    ListNode<Integer> dummyHead = new ListNode<>(0, L);
+    ListNode<Integer> sublistHead = dummyHead;
+    int k = 1;
+    while (k++ < start) {
+        sublistHead = sublistHead.next;
+    }
+
+    // 부분 리스트를 뒤집는다.
+    ListNode<Integer> sublistIter = sublistHead.next;
+    while (start++ < finish) {
+        ListNode<Integer> temp = sublistIter.next;
+        sublistIter.next = temp.next;
+        temp.next = sublistHead.next;
+        sublistHead.next = temp;
+    }
+    return dummyHead.next;
+}
+```
+
+f번째 노드까지만 순회하면 되므로 시간 복잡도는 O(f)가 된다.
+
