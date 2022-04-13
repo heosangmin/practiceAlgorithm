@@ -149,3 +149,80 @@ public static ListNode<Integer> reverseSublist(ListNode<Integer> L, int start, i
 
 f번째 노드까지만 순회하면 되므로 시간 복잡도는 O(f)가 된다.
 
+## 7.3 사이클이 존재하는지 확인하기
+마지막 노드가 null로 끝나는 노드의 시퀀스를 일컬어 연결리스트(linked list)라고 부르지만, next 필드에 이전 노드를 가리키면 사이클이 형성될 수도 있다.
+
+단순 연결리스트의 헤드가 주어졌을 때 사이클이 존재하면 사이클의 시작 노드를, 그렇지 않으면 null을 반환하는 프로그램을 작성하라(단, 리스트의 길이를 사전에 알 수 없다).
+
+> 힌트: 두 개의 반복자를 사용해서 하나는 빠르게 하나는 느리게 움직여 보자.
+
+이 문제에는 여러가지 해법이 존재한다. 공간에 제약이 없다면 간단하게 방문했던 노드들을 전부 해시 테이블에 넣고 현재 노드가 이전에 방문했던 노드인지에 따라 사이클의 존재 유무를 확인할 수 있다. 사이클이 존재하지 않는다면 탐색은 테일에서 끝날 것이다(테일은 종종 next를 null로 세팅한다). 전체 노드의 개수를 n이라 할 때 이 방법은 O(n)의 공간을 추가적으로 사용해야 한다.
+
+추가적인 공간 없이 생각해 보자. 무식하게 생각해 보면 이중 루프를 사용해 볼 수 있다. 바깥 루프는 리스트의 노드를 하나씩 방문하고, 안쪽 루프는 매번 헤드에서 시작해서 바깥 루프가 가리키는 노드까지 반복한다. 바깥 루프가 방문했던 노드를 안쪽 루프가 재방문 했다면 사이클이 존재한다고 말할 수 있다. 혹은 바깥 루프가 리스트의 끝에 도달했다면 사이클이 없다고 말할 수 있다. 이 방법의 시간 복잡도는 O(n^2)이다.
+
+이 아이디어를 발전시켜 선형 시간에 문제를 풀어 보자. 두 개의 반복자를 사용할 것이다. 하나는 천천히 움직이고, 다른 하나는 빠르게 움직이며 리스트를 순회한다. 즉, 단계마다 천천히 움직이는 반복자는 노드를 한 개씩 방문하고, 빠르게 움직이는 반복자는 노드를 두 개씩 방문한다. 만약 두 반복자가 어느 순간 같은 노드를 가리킨다면 사이클이 존재한다고 말할 수 있다. 왜냐하면 빠르게 움직이는 반복자가 느리게 움직이는 반복자를 건너뛴다면, 그 다음 단계에 두 반복자는 만나게 되어 있기 때문이다.
+
+이 방법을 통해 사이클의 유무를 찾을 수 있다. 사이클의 시작 지점은 사이클의 길이 C를 통해 구할 수 있다. 사이클이 존재하고 현재 가리키는 노드가 사이클 내부에 있다면, 사이클의 길이를 쉽게 구할 수 있다. 사이클의 첫 번째 노드를 찾기 위해서 두 개의 반복자가 필요하다. 하나를 다른 하나보다 C만큼 앞서 배치한 뒤, 그 둘을 동시에 한 칸씩 움직이다 보면 언젠가는 둘이 만나게 된다. 그 만나는 지점이 사이클의 첫 번째 노드가 된다.
+
+```java
+public static ListNode<Integer> hasCycle(ListNode<Integer> head) {
+    ListNode<Integer> fast = head, slow = head;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            // 사이클이 존재한다면, 사이클의 길이를 계산한다.
+            int cycleLen = 0;
+            do {
+                ++cycleLen;
+                fast = fast.next;
+            } while (slow != fast);
+
+            // 사이클의 시작 지점을 찾는다. ???
+            ListNode<Integer> cycleLenAdvancedIter = head;
+
+            // cycleLenAdvancedIter 포인터를 cycleLen 길이만큼 앞으로 보낸다. ???
+            while (cycleLen-- > 0) {
+                cycleLenAdvancedIter = cycleLenAdvancedIter.next;
+            }
+
+            ListNode<Integer> iter = head;
+            // 두 반복자를 같이 움직인다.
+            while (iter != cycleLenAdvancedIter) {
+                iter = iter.next;
+                cycleLenAdvancedIter = cycleLenAdvancedIter.next;
+            }
+            return iter; // iter가 사이클의 시작 지점이다.
+        }
+    }
+    return null; // 사이클이 없다.
+}
+```
+
+사이클의 시작 지점까지의 노드의 개수를 F, 사이클의 길이를 C, 전체 노드의 개수를 n이라고 할 때 시간 복잡도는 O(F) + O(C) = O(n)이 된다. 두 반복자가 사이클 내부로 들어가는 데 O(F)가 소요되고, 사이클 내부에서 두 반복자가 만나는 데 O(C)가 소요된다.
+
+> 응용: 다음은 사이클의 길이를 계산하지 않고 사이클의 시작점을 찾는 프로그램이다. 이 프로그램은 앞의 코드보다 더 간결하다. 프로그램이 제대로 동작하는지 확인해 보자.
+
+```java
+public static ListNode<Integer> hasCycle(ListNode<Integer> head) {
+    ListNode<Integer> fast = head, slow = head;
+
+    while (fast != null && fast.next != null && fast.next.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) { // 사이클이 존재한다.
+            // 사이클의 시작 지점을 찾는다.
+            slow = head;
+            // 동시에 두 포인터를 앞으로 내보낸다.
+            while (slow != fast) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+            return slow; // slow가 사이클의 시작 지점이다.
+        }
+        return null; // 사이클이 존재하지 않는다.
+    }
+}
+```
+
