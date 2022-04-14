@@ -226,3 +226,55 @@ public static ListNode<Integer> hasCycle(ListNode<Integer> head) {
 }
 ```
 
+## 7.4 사이클이 없는 두 리스트가 겹치는지 확인하기
+두 개의 단순 연결리스트가 동일한 노드 리스트를 공유할 수도 있다. 플라이웨이트 패턴(flyweight pattern)을 통해 메모리 공간을 절약할 목적이 있을 수도 있고, 정규 형태를 유지하려는 목적이 있을 수도 있다.
+
+사이클 없는 단순 연결리스트 두 개가 주어졌을 때 두 리스트가 노드를 공유하는지 판단하는 프로그램을 작성하라.
+
+> 힌트: 단순한 경우를 먼저 생각해 보자.
+
+무식한 방법으로 생각해 보면 하나의 리스트에 있는 노드를 전부 해시 테이블에 넣고 해당 노드가 해시 테이블에 존재하는지 확인해 보면 된다. 이 방식을 모든 노드에 대해서 반복한다. 전체 노드가 n개일 때 O(n)의 공간과 시간이 필요하다.
+
+이중 루프를 이용하면 공간을 추가로 사용하지 않을 수도 있다. 즉, 하나는 첫 번째 리스트를 반복하고 다른 하나는 두 번째 리스트를 반복하면서 두 번째 리스트의 노드가 첫 번째 리스트에 포함되어 있는지 확인한다. 이 방법은 O(n^2) 시간이 소요된다.
+
+여기에 중요한 사실이 하나 있다. 서로 겹치는 리스트는 반드시 테일을 공유해야 한다는 것이다. 즉, 리스트가 중간에 한 번 만나면 다시 갈라질 수 없다. 따라서 각 리스트의 테일만 확인하면 두 리스트가 겹치는지 확인할 수 있다.
+
+겹치는 두 리스트가 처음으로 공유하는 노드를 찾으려면 어떻게 해야 할까? 우선 두 리스트의 길이를 알아야 한다. 그다음 길이가 짧은 리스트는 헤드에서 시작하고, 길이가 긴 리스트는 두 리스트 길이의 차이만큼 앞에서 시작해서 같이 한 칸씩 나아간다. 그러면 처음으로 공유하는 노드에서 만나게 된다. 만약 공통된 노드를 끝까지 찾지 못했다면 두 리스트가 공유하는 노드는 없다는 뜻이다.
+
+```java
+public static ListNode<Integer> overlappingNoCycleLists(ListNode<Integer> L1, ListNode<Integer> L2) {
+    int L1Length = length(L1), L2Length = length(L2);
+
+    // 두 리스트의 길이가 같아지도록 길이가 긴 리스트를 먼저 앞으로 내보낸다.
+    if (L1Length > L2Length) {
+        L1 = advanceListByK(L1Length - L2Length, L1);
+    } else {
+        L2 = advanceListByK(L2Length - L1Length, L2);
+    }
+
+    while (L1 != null && L2 !== null L1 != L2) {
+        L1 = L1.next;
+        L2 = L2.next;
+    }
+    return L1; // L1과 L2가 겹치지 않으면 null을 반환?
+}
+
+public static ListNode<Integer> advanceListByK(int k, ListNode<Integer> L) {
+    while (k-- > 0) {
+        L = L.next;
+    }
+    return L;
+}
+
+private static int length(ListNode<Integer> L) {
+    int len = 0;
+    while (L != null) {
+        len++;
+        L = L.next;
+    }
+    return len;
+}
+```
+
+이 알고리즘의 시간 복잡도는 O(n)이고 공간 복잡도는 O(1)이다.
+
