@@ -278,3 +278,76 @@ private static int length(ListNode<Integer> L) {
 
 이 알고리즘의 시간 복잡도는 O(n)이고 공간 복잡도는 O(1)이다.
 
+## 7.5 사이클이 존재하는 두 리스트가 겹치는지 확인하기
+문제 7.4를 약간 변형해 보자. 만약 사이클을 포함하는 리스트도 존재한다면 공유하는 노드를 어떻게 찾아야 할까? 만약 공유하는 노드가 존재한다면, 가장 처음 만나는 노드를 반환하면 된다. 하지만 처음 만나는 노드가 여러 개일 가능성이 있다. 만약 노드가 사이클에 포함되어 있다면 두 리스트에 포함된 사이클이 같더라도, 첫 번째 리스트를 순회하면서 찾은 첫 번째 겹치는 노드와 두 번째 리스트를 순회하면서 찾은 첫 번째 겹치는 노드가 다를 수 있다. 이 경우에는 두 노드 중 아무거나 반환하면 된다.
+
+> 힌트: 케이스를 분석해 보라. 두 리스트 모두 사이클이 있으면 어떻게 해야 할까? 같은 사이클로 끝나는 경우에는 어떻게 해야 할까? 하나는 사이클이 있지만 다른 하나는 사이클이 없다면 어떻게 해야 할까?
+
+이 문제는 문제 7.4의 해법에서 언급했던 해시 테이블을 사용하면 쉽게 풀 수 있다. 이 방법은 전체 노드가 n개일 때 시간 복잡도와 공간 복잡도가 모두 O(n)이 된다.
+
+다양한 케이스를 고려해 보면 공간 복잡도를 개선할 수 있다. 가장 쉬운 케이스는 사이클이 없는 경우로 문제 7.3의 해법을 사용해서 해결할 수 있다. 이 케이스는 문제 7.4의 해법을 사용해서 겹치는지 확인하면 된다.
+
+만약 하나는 사이클이 존재하고 다른 하나는 사이클이 존재하지 않는다면 이 두 리스트는 공유하는 노드가 있을 수 없다.
+
+이제 두 리스트 모두 사이클이 존재하는 경우를 생각해 보자. 두 리스트가 겹친다면, 두 리스트의 사이클은 반드시 동일해야 한다.
+
+두 가지 경우의 수가 존재한다. 첫 번째 경우는 사이클이 시작되기 전에 만나는 경우인데, 이 경우에는 둘이 만나는 첫 번째 노드가 단 하나여야 한다. 두 번째 경우는 사이클이 시작된 후에 만나는 경우이다. 첫 번째 경우는 문제 7.4의 해법을 이용해서 풀 수 있고, 두 번째 경우는 문제 7.3의 해법을 사용해서 풀 수 있다.
+
+```java
+public static ListNode<Integer> overlappingLists(ListNode<Integer> L1, ListNode<Integer> L2) {
+    // 사이클의 시작 지점을 저장한다.
+    ListNode<Integer> root1 = CheckingCycle.hasCycle(L1);
+    ListNode<Integer> root2 = CheckingCycle.hasCycle(L2);
+
+    if (root1 == null && root2 == null) {
+        // 두 리스트 모두 사이클이 존재하지 않는다.
+        return overlappingNoCycleLists(L1, L2);
+    } else if ((root1 != null && root2 == null) || (root1 == null && root2 != null)) {
+        // 하나는 사이클이 존재하고 하나는 존재하지 않는다.
+        return null;
+    }
+
+    // 두 리스트 모두 사이클이 존재한다.
+    ListNode<Integer> temp = root2;
+    do {
+        temp = temp.next;
+    } while ( temp != root1 && temp != root2 );
+
+    // L1과 L2가 같은 사이클에서 끝나지 않는다.
+    if (temp != root1) {
+        return null; // 사이클이 겹치지 않는다.
+    }
+
+    // L1과 L2가 같은 사이클로 끝난다.
+    // 사이클이 시작하기 전에 첫 번째 노드가 겹친다면 그 위치를 가리키게 한다.
+    int stem1Length = distance(L1, root1), stem2Length = distance(L2, root2);
+    if (stem1Length > stem2Length) {
+        L1 = OverlappingListNoCycle.advanceListByK(stem1Length - stem2Length, L1);
+    } else {
+        L2 = OverlappingListNoCycle.advanceListByK(stem2Length - stem1Length, L2);
+    }
+
+    while (L1 != L2 && L1 != root1 && L2 != root2) {
+        L1 = L1.next;
+        L2 = L2.next;
+    }
+
+    // 만약에 root1에 도달하기 전에 L1 == L2이 되었다면, 첫 번째로 겹치는 노드가
+    // 사이클이 시작하기 전이라는 의미이다. 그게 아니라면, 처음으로 겹치는 노드는
+    // 여러 개 존재할 수 있고 사이클 내에 있는 아무 노드나 반환하면 된다.
+    return L1 == L2 ? L1 : root1;
+}
+
+// a와 b 사이의 거리를 계산한다.
+private static int distance(ListNode<Integer> a, ListNode<Integer> b) {
+    int dis = 0;
+    while (a != b) {
+        a = a.next;
+        ++dis;
+    }
+    return dis;
+}
+```
+
+n과 m을 입력 리스트의 길이라고 했을 때, 시간 복잡도는 O(n + m)이고 공간 복잡도는 O(1)이다.
+
