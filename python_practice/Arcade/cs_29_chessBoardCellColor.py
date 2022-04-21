@@ -23,3 +23,6 @@ def solution(cell1, cell2):
 
 print(solution("A1", "C3")) # T
 print(solution("A1", "H3")) # F
+
+# 와 다른 사람 거 이거 깔끔하다
+# return (ord(cell1[0])+int(cell1[1])+ord(cell2[0])+int(cell2[1]))%2==0
