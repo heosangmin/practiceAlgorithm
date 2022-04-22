@@ -401,3 +401,33 @@ public static ListNode<Integer> removeXthLast(ListNode<Integer> L, int k) {
 ```
 
 리스트의 길이가 n일 때 시간 복잡도는 O(n)이고 공간 복잡도는 O(1)이 된다. 반복자 두 개를 사용한 방법과 무식한 방법을 비교해 보자. 전체 리스트는 메모리에 올릴 수 없을 만큼 크지만, k가 충분히 작아서 두 반복자 사이의 노드는 메모리에 올릴 수 있다고 가정한다. 반복자 두 개를 사용한 방법은 무식한 방법과 비교했을 때 디스크 읽는 횟수를 절반이나 줄일 수 있다.
+
+## 7.8 정렬된 리스트에서 중복된 원소 삭제하기
+이번에는 정렬된 정수 리스트에서 중복되는 부분을 제거하는 문제를 풀어 보자.
+
+정수가 정렬된 단순 연결리스트가 주어졌을 떄 중복된 부분을 제거하는 프로그램을 작성하라. 리스트는 정렬되어 있다.
+
+> 힌트 : 갱신해야 할 next 필드에 주목하자.
+
+무식한 방법은 해시 테이블을 이용해서 중복된 부분을 제거하고 이를 바탕으로 새로운 리스트를 만드는 것이다. 혹은 새로운 리스트를 매번 탐색하면서 추가려는 값이 이미 존재하는지 확인해 보면 된다. 첫 번째 방법은 해시 테이블을 이용하므로 추가적으로 O(n)의 공간을 필요로 하고 두 번째 방법은 매번 리스트를 살펴봐야 하므로 O(n^2)의 시간이 소요된다. 또한 두 방법 모두 길이가 n인 새로운 리스트를 할당한다.
+
+리스트가 정렬되어 있다는 사실을 이용하면 더 나은 해법을 찾을 수 있다. 리스트를 처음부터 차례로 탐색하면서 인접한 노드의 값이 동일한 경우에 현재 노드를 삭제한다.
+
+```java
+public static ListNode<Integer> removeDuplicates(ListNode<Integer> L) {
+    ListNode<Integer> iter = L;
+    while (iter != null) {
+        // 그 다음으로 다른 값을 찾기 위해 nextDistinct를 사용한다.
+        ListNode<Integer> nextDistinct = iter.next;
+        while (nextDistinct != null && nextDistinct.data == iter.data) {
+            nextDistinct = nextDistinct.next;
+        }
+        iter.next = nextDistinct;
+        iter = nextDistinct;
+    }
+    return L;
+}
+```
+
+약간의 분할 상환 분석(amortized analysis)을 통해 시간 복잡도를 계산해 보자. 인접한 노드의 값이 같은 경우가 많을 때는 노드 하나를 여러 번 참조해야 한다. 하지만 리스트의 간선을 기준으로 생각했을 때 각 간선을 참조한 횟수는 한 번뿐이므로 시간 복잡도는 O(n)이 되고, 추가로 사용한 메모리가 없으므로 공간 복잡도는 O(1)이 된다.
+
