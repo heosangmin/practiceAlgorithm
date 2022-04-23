@@ -431,3 +431,46 @@ public static ListNode<Integer> removeDuplicates(ListNode<Integer> L) {
 
 약간의 분할 상환 분석(amortized analysis)을 통해 시간 복잡도를 계산해 보자. 인접한 노드의 값이 같은 경우가 많을 때는 노드 하나를 여러 번 참조해야 한다. 하지만 리스트의 간선을 기준으로 생각했을 때 각 간선을 참조한 횟수는 한 번뿐이므로 시간 복잡도는 O(n)이 되고, 추가로 사용한 메모리가 없으므로 공간 복잡도는 O(1)이 된다.
 
+## 7.9 단순 연결리스트에서 오른쪽 원형 시프트 구현하기
+이번에는 리스트에서 오른쪽으로 원형 시프트를 수행하는 문제를 풀어 보자.
+자연수 k와 단순 연결리스트가 주어졌을 때, 오른쪽으로 원형 시프트(circular shift)를 k번 수행한 뒤의 리스트를 반환하는 프로그램을 작성하라.
+
+> 힌트: 배열을 회전하는 문제와 다른 점이 무엇인지 생각해 보자.
+
+가장 무식한 방법은 오른쪽 시프트 연산을 k번 수행하는 것이다. 오른쪽 시프트 연산을 한 번 할때마다 마지막 노드와 그 이전 노드를 찾은 뒤, 마지막 노드는 헤드 앞에 연결시키고 그 이전 노드의 next 필드는 null로 바꿔준다. 리스트의 길이를 n이라 했을 때 이 알고리즘의 공간 복잡도는 O(1), 시간 복잡도는 O(kn)이 된다.
+
+k가 n보다 클 수도 있다. 이 경우에는 k mod n번 시프트 연산을 수행하면 되기 때문에 k < n이라고 가정해도 좋다. 연결리스트는 쉽게 분리가 가능하고 부분 리스트의 재배열 또한 쉽다. 이러한 성질을 이용하면 무식한 방법을 좀 더 개선할 수 있다. 먼저 마지막 노드 t를 찾는다. t의 다음 노드는 기존의 헤드가 되어야 하므로 t의 다음 노드를 헤드로 갱신한다. 시프트 연산을 적용한 후에 기존 헤드는 k번째 노드가 되어야 하므로 n - k번째 노드를 헤드로 설정한 뒤 환형 고리를 끊어 준다.
+
+```java
+public static ListNode<Integer> cyclicallyRightShiftList(ListNode<Integer> L, int k) {
+    if (L == null) {
+        return L;
+    }
+    // L의 길이와 마지막 노드를 구한다.
+    ListNode<Integer> tail = L;
+    int n = 1;
+    while (tail.next != null) {
+        ++n;
+        tail = tail.next;
+    }
+    k %= n;
+    if (k == 0) {
+        return L;
+    }
+
+    tail.next = L; // 테일과 헤드를 연결함으로써 사이클을 만든다.
+    int stepsToNewHead = n - k;
+    ListNode<Integer> newTail = tail;
+    while (stepsToNewHead-- > 0) {
+        newTail = newTail.next;
+    }
+    ListNode<Integer> newHead = newTail.next;
+    newTail.next = null;
+    return newHead;
+}
+```
+
+이 알고리즘의 시간 복잡도는 O(n)이고 공간 복잡도는 O(1)이다.
+
+
+
