@@ -1,4 +1,4 @@
-package java_epi.ch07_LinkedList;
+package java_epi.ch07;
 
 public class practice1 {
     public static void main(String[] args) {
