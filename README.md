@@ -1,6 +1,21 @@
 # [개인 연습용] practice algorithm
 알고리즘 연습 기록용 레포지토리입니다.
 
+# 유형
+## 그리디(greedy)
+| 알고리즘 | 언어 |
+| --- | --- |
+|[큰 수의 법칙](this_is_coding_test/ch03_greedy/02_%ED%81%B0_%EC%88%98%EC%9D%98_%EB%B2%95%EC%B9%99.py) | 파이썬 |
+|[숫자 카드 게임](this_is_coding_test/ch03_greedy/03_%EC%88%AB%EC%9E%90_%EC%B9%B4%EB%93%9C_%EA%B2%8C%EC%9E%84.py) | 파이썬 |
+|[1이 될 때까지](this_is_coding_test/ch03_greedy/04_1%EC%9D%B4_%EB%90%A0_%EB%95%8C%EA%B9%8C%EC%A7%80.py) | 파이썬 |
+|[fractional_kanpsack](python_algorithm_interview/21_greedy_algorithm/fractional_kanpsack.py) | 파이썬 |
+|[best-time-to-buy-and-sell-stock-ii](python_algorithm_interview/21_greedy_algorithm/q78_best-time-to-buy-and-sell-stock-ii.py) | 파이썬 |
+|[queue-reconstruction-by-height](python_algorithm_interview/21_greedy_algorithm/q79_queue-reconstruction-by-height.py) | 파이썬 |
+|[task-scheduler](python_algorithm_interview/21_greedy_algorithm/q80_task-scheduler.py) | 파이썬 |
+|[gas-station](python_algorithm_interview/21_greedy_algorithm/q81_gas-station.py) | 파이썬 |
+|[assign-cookies](python_algorithm_interview/21_greedy_algorithm/q82_assign-cookies.py) | 파이썬 |
+
+
 # Python
 
 https://github.com/onlybooks/algorithm-interview
