@@ -3,7 +3,7 @@
 
 # 유형
 ## 그리디(greedy)
-| 알고리즘 | 언어 |
+| 문제 | 언어 |
 | --- | --- |
 |[큰 수의 법칙](this_is_coding_test/ch03_greedy/02_%ED%81%B0_%EC%88%98%EC%9D%98_%EB%B2%95%EC%B9%99.py) | Python |
 |[숫자 카드 게임](this_is_coding_test/ch03_greedy/03_%EC%88%AB%EC%9E%90_%EC%B9%B4%EB%93%9C_%EA%B2%8C%EC%9E%84.py) | Python |
@@ -16,7 +16,7 @@
 |[assign-cookies](python_algorithm_interview/21_greedy_algorithm/q82_assign-cookies.py) | Python |
 
 ## 구현(implementation)
-| 알고리즘 | 언어 |
+| 문제 | 언어 |
 | --- | --- |
 |[상하좌우](this_is_coding_test/ch04_implementation/%EC%98%88%EC%A0%9C4-1.%EC%83%81%ED%95%98%EC%A2%8C%EC%9A%B0.py)|Python|
 |[시각](this_is_coding_test/ch04_implementation/%EC%98%88%EC%A0%9C4-2.%EC%8B%9C%EA%B0%81.py)|Python|
@@ -24,6 +24,12 @@
 |[게임 개발](this_is_coding_test/ch04_implementation/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EA%B2%8C%EC%9E%84_%EA%B0%9C%EB%B0%9C.py)|Python|
 
 ## DFS/BFS
+| 문제 | 언어 |
+| --- | --- |
+|[DFS/BFS기본](this_is_coding_test/ch05_DFS_BFS/DFS_BFS.md)|Python|
+|[팩토리얼](this_is_coding_test/ch05_DFS_BFS/%ED%8C%A9%ED%86%A0%EB%A6%AC%EC%96%BC.py)|Python|
+|[음료수 얼려 먹기](this_is_coding_test/ch05_DFS_BFS/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EC%9D%8C%EB%A3%8C%EC%88%98_%EC%96%BC%EB%A0%A4_%EB%A8%B9%EA%B8%B0.py)|Python|
+|[미로 탈출](this_is_coding_test/ch05_DFS_BFS/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EB%AF%B8%EB%A1%9C_%ED%83%88%EC%B6%9C.py)|Python|
 
 # Python
 
