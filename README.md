@@ -16,7 +16,7 @@
 |[assign-cookies](python_algorithm_interview/21_greedy_algorithm/q82_assign-cookies.py) | Python |
 
 ## 구현(implementation)
-| 문제 | 언어 |
+| 문제/내용 | 언어 |
 | --- | --- |
 |[상하좌우](this_is_coding_test/ch04_implementation/%EC%98%88%EC%A0%9C4-1.%EC%83%81%ED%95%98%EC%A2%8C%EC%9A%B0.py)|Python|
 |[시각](this_is_coding_test/ch04_implementation/%EC%98%88%EC%A0%9C4-2.%EC%8B%9C%EA%B0%81.py)|Python|
@@ -24,12 +24,26 @@
 |[게임 개발](this_is_coding_test/ch04_implementation/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EA%B2%8C%EC%9E%84_%EA%B0%9C%EB%B0%9C.py)|Python|
 
 ## DFS/BFS
-| 문제 | 언어 |
+| 내용/내용 | 언어 |
 | --- | --- |
 |[DFS/BFS기본](this_is_coding_test/ch05_DFS_BFS/DFS_BFS.md)|Python|
 |[팩토리얼](this_is_coding_test/ch05_DFS_BFS/%ED%8C%A9%ED%86%A0%EB%A6%AC%EC%96%BC.py)|Python|
 |[음료수 얼려 먹기](this_is_coding_test/ch05_DFS_BFS/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EC%9D%8C%EB%A3%8C%EC%88%98_%EC%96%BC%EB%A0%A4_%EB%A8%B9%EA%B8%B0.py)|Python|
 |[미로 탈출](this_is_coding_test/ch05_DFS_BFS/%EC%8B%A4%EC%A0%84%EB%AC%B8%EC%A0%9C.%EB%AF%B8%EB%A1%9C_%ED%83%88%EC%B6%9C.py)|Python|
+
+## 정렬(sort)
+| 내용/내용 | 언어 |
+| --- | --- |
+|[선택,삽입,퀵,계수정렬 개념](this_is_coding_test/ch06_sort/%EC%A0%95%EB%A0%AC.md)|Python|
+|[퀵소트 예1](this_is_coding_test/ch06_sort/quicksort_1.py)|Python|
+|[퀵소트 예2](this_is_coding_test/ch06_sort/quicksort_2.py)|Python|
+|[계수 정렬 예](this_is_coding_test/ch06_sort/countsort.py)|Python|
+
+## 이진 탐색
+| 내용/내용 | 언어 |
+| --- | --- |
+|[이진 탐색 개념](this_is_coding_test/ch07_binary_search/%EC%9D%B4%EC%A7%84%ED%83%90%EC%83%89.md)|Python|
+|[이진 탐색 예](this_is_coding_test/ch07_binary_search/binary_search.py)|Python|
 
 # Python
 
