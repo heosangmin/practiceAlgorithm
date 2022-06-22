@@ -10,6 +10,16 @@
 
 ### 해시 테이블(hash table)
 
+### 그래프(graph)
+
+| 문제 | 내용 | 출처 |
+| --- | --- | --- |
+| [hasDeadlock](codesignal.com/interview-practice/DataStructures/Graphs/01.hasDeadlock.py) | 그래프에 데드락이 존재하는지 판별하기 | codesignal.com |
+| [singlePointOfFailure](codesignal.com/interview-practice/DataStructures/Graphs/02.singlePointOfFailure.py) | 노드간 우회로가 없는 간선 수 구하기 | codesignal.com |
+| [feedingTime](codesignal.com/interview-practice/DataStructures/Graphs/03.feedingTime.py) | 완전 탐색? | codesignal.com |
+| [flightPlan](codesignal.com/interview-practice/DataStructures/Graphs/04.flightPlan.py) | 최단 도착 시간 구하기 | codesignal.com |
+| [currencyArbitrage](codesignal.com/interview-practice/DataStructures/Graphs/05.currencyArbitrage.py) | 플로이드 워셜 활용하기 | codesignal.com |
+
 ### 트리(tree)
 
 | 문제 | 내용 | 출처 |
@@ -20,6 +30,7 @@
 | [kthSmallestInBST](codesignal.com/interview-practice/DataStructures/Trees-Basic/04.kthSmallestInBST.py) | BST에서 k번째 값 찾기 | codesignal.com |
 | [isSubtree](codesignal.com/interview-practice/DataStructures/Trees-Basic/05.isSubtree.py) | 트리2가 트리1의 서브트리인가 | codesignal.com |
 | [restoreBinaryTree](codesignal.com/interview-practice/DataStructures/Trees-Basic/06.restoreBinaryTree.py) | 중위, 전위 순회 리스트로 트리를 복원하기 | codesignal.com |
+| [treeDiameter](codesignal.com/interview-practice/DataStructures/Trees-Advanced/01.treeDiameter.py) | 트리의 지름 구하기 | codesignal.com |
 
 ### 트라이(trie)
 
