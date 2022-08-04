@@ -123,4 +123,3 @@
 |분할 정복|[22_devide_and_conquer](./python_algorithm_interview/22_devide_and_conquer)|
 |다이나믹 프로그래밍|[23_dynamic_programming](./python_algorithm_interview/23_dynamic_programming)|
 |카카오 공채 문제 풀이|[24_kakao](./python_algorithm_interview/24_kakao)|
-
